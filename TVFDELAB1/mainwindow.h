@@ -21,6 +21,8 @@ private slots:
 
     void on_setC_editingFinished();
 
+    void on_lineEdit_editingFinished();
+
 private:
     QStringList tableColumn;
     QChart* chart = nullptr;
@@ -31,6 +33,11 @@ private:
     QValueAxis* axisY = nullptr;
     QValueAxis* axisX2 = nullptr;
     QValueAxis* axisY2 = nullptr;
+    double c = -1.;
+    int N = 100;
+
+private:
+    void task1();
 
 private:
     Ui::MainWindow *ui;

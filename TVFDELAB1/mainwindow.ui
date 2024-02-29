@@ -53,7 +53,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-387</y>
          <width>1348</width>
          <height>1460</height>
         </rect>
@@ -267,6 +267,83 @@
            <attribute name="title">
             <string>Задание 1</string>
            </attribute>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lineEdit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>100</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Количество экспериментов: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3" rowspan="2">
+             <widget class="QPushButton" name="start1">
+              <property name="text">
+               <string>Провести эксперименты</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" colspan="4">
+             <widget class="QTableWidget" name="tableWidget">
+              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderCascadingSectionResizes">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>30</number>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>y</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>P(η = y)</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="title">
@@ -289,7 +366,7 @@
            <item row="0" column="1">
             <widget class="QLabel" name="img2">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -317,7 +394,7 @@
            <item row="1" column="1">
             <widget class="QLabel" name="img3">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -345,7 +422,7 @@
            <item row="0" column="0" rowspan="2">
             <widget class="QLabel" name="label">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>

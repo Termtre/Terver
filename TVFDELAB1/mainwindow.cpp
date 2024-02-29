@@ -89,8 +89,6 @@ void MainWindow::on_CreateGraphics_clicked()
         funcV = nullptr;
     }
 
-    double c = ui->setC->text().toDouble();
-
     rasprV = new QLineSeries();
     funcV = new QLineSeries();
 
@@ -168,5 +166,41 @@ void MainWindow::on_setC_editingFinished()
     }
 
     ui->CreateGraphics->setEnabled(true);
+    c = ui->setC->text().toDouble();
+}
+
+
+void MainWindow::on_lineEdit_editingFinished()
+{
+    bool ok;
+    ui->lineEdit->text().toInt(&ok);
+
+    if (ok == false)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Недопустимые символы");
+        msgBox.exec();
+
+        ui->start1->setEnabled(false);
+
+        return;
+    }
+
+    if (ui->lineEdit->text().toInt() < 0)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Количество не может быть отрицательным числом");
+        msgBox.exec();
+        ui->start1->setEnabled(false);
+        return;
+    }
+
+    ui->start1->setEnabled(true);
+    N = ui->lineEdit->text().toInt();
+}
+
+void MainWindow::task1()
+{
+
 }
 
