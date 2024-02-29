@@ -71,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     chart2->setBackgroundRoundness(0);
 
     ui->funct->setRenderHint(QPainter::Antialiasing);
+    ui->tableWidget->verticalHeader()->hide();
 }
 
 MainWindow::~MainWindow()
@@ -106,8 +107,6 @@ void MainWindow::on_CreateGraphics_clicked()
 
     if (c != -2.)
     {
-        double lambda = 2. / (2. + c);
-
         for (int i = 0; i < 100; i++)
         {
             double y = static_cast<double>(i) / 50.;
@@ -137,6 +136,7 @@ void MainWindow::on_CreateGraphics_clicked()
     axisY2->setRange(0., 1.);
 
     ui->funct->setChart(chart2);
+    on_start1_clicked();
 }
 
 
@@ -167,6 +167,7 @@ void MainWindow::on_setC_editingFinished()
 
     ui->CreateGraphics->setEnabled(true);
     c = ui->setC->text().toDouble();
+    if (c != -2.) lambda = 2. / (2. + c);
 }
 
 
@@ -201,6 +202,33 @@ void MainWindow::on_lineEdit_editingFinished()
 
 void MainWindow::task1()
 {
+    for (int i = 0; i <= N; i++)
+    {
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<double>(i - 50) / 50.)));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(plotRaspr(static_cast<double>(i - 50) / 50.))));
+    }
+}
 
+double MainWindow::plotRaspr(double y)
+{
+    if (y <= c)
+    {
+        return 0.;
+    }
+    else if (c < y && y <= 0.)
+    {
+        return -y / c + 1.;
+    }
+    else
+    {
+        return exp(-lambda * y);
+    }
+}
+
+
+void MainWindow::on_start1_clicked()
+{
+    ui->tableWidget->setRowCount(N + 1);
+    task1();
 }
 

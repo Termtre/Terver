@@ -23,6 +23,8 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
+    void on_start1_clicked();
+
 private:
     QStringList tableColumn;
     QChart* chart = nullptr;
@@ -35,9 +37,11 @@ private:
     QValueAxis* axisY2 = nullptr;
     double c = -1.;
     int N = 100;
+    double lambda = 2.;
 
 private:
     void task1();
+    double plotRaspr(double y);
 
 private:
     Ui::MainWindow *ui;
