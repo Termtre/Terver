@@ -202,15 +202,19 @@ void MainWindow::on_lineEdit_editingFinished()
 
 void MainWindow::task1()
 {
+
     for (int i = 0; i <= N; i++)
     {
-        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<double>(i - 50) / 50.)));
-        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(plotRaspr(static_cast<double>(i - 50) / 50.))));
+        double x = funcRandom(static_cast<double>(rand()) / RAND_MAX);
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(x)));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(plotRaspr(x))));
     }
+
+    ui->tableWidget->sortByColumn(0, Qt::AscendingOrder);
 }
 
 double MainWindow::plotRaspr(double y)
-{
+{   
     if (y <= c)
     {
         return 0.;
@@ -222,6 +226,24 @@ double MainWindow::plotRaspr(double y)
     else
     {
         return exp(-lambda * y);
+    }
+}
+
+double MainWindow::funcRandom(double y)
+{
+    //if (0 < y && y <= 0.5)
+    if (c < y && y <= 0.)
+    {
+        return sqrt(2. * -c * y) - 1.;
+    }
+    //else if (0.5 < y && y <= 1)
+    else if (y > c)
+    {
+        return -1. / lambda * log(1. - c * lambda / 2. - lambda * y);
+    }
+    else
+    {
+        return 0.;
     }
 }
 

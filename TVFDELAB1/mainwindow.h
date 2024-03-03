@@ -42,6 +42,7 @@ private:
 private:
     void task1();
     double plotRaspr(double y);
+    double funcRandom(double y);
 
 private:
     Ui::MainWindow *ui;
