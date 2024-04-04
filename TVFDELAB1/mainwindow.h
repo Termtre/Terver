@@ -23,8 +23,6 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
-    void on_start1_clicked();
-
 private:
     QStringList tableColumn;
     QChart* chart = nullptr;
@@ -38,9 +36,12 @@ private:
     double c = -1.;
     int N = 100;
     double lambda = 2.;
+    bool changedC = false;
+    std::map<double, double> table;
 
 private:
     void task1();
+    void task2();
     double plotRaspr(double y);
     double funcRandom(double y);
 

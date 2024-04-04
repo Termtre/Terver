@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>1494</width>
     <height>800</height>
    </rect>
   </property>
@@ -26,6 +26,21 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item row="0" column="0" rowspan="7">
      <widget class="QScrollArea" name="scrollArea">
       <property name="sizePolicy">
@@ -54,84 +69,36 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1348</width>
-         <height>1460</height>
+         <width>1960</width>
+         <height>1437</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="2" column="0">
-         <widget class="QGroupBox" name="groupBox_2">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item row="0" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string/>
+           <string>Постановка задачи</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QLabel" name="label_2">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Параметр c: </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="setC">
-             <property name="text">
-              <string>-1</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>λ=2/(2+c)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="CreateGraphics">
+            <widget class="QLabel" name="img3">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -139,72 +106,17 @@
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>50</height>
+               <height>0</height>
               </size>
              </property>
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
              <property name="text">
-              <string>Построить графики</string>
+              <string/>
              </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="2" column="1" rowspan="2">
-         <widget class="QGroupBox" name="groupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>Графики</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="spacing">
-            <number>5</number>
-           </property>
-           <property name="leftMargin">
-            <number>5</number>
-           </property>
-           <property name="topMargin">
-            <number>5</number>
-           </property>
-           <property name="rightMargin">
-            <number>5</number>
-           </property>
-           <property name="bottomMargin">
-            <number>5</number>
-           </property>
-           <item>
-            <widget class="QChartView" name="raspr"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/img/img/3.png</pixmap>
              </property>
-             <property name="text">
-              <string>Плотность распределения с.в. η</string>
+             <property name="scaledContents">
+              <bool>true</bool>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -212,20 +124,58 @@
             </widget>
            </item>
            <item>
-            <widget class="QChartView" name="funct"/>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_5">
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
+            <widget class="QLabel" name="img2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="text">
-              <string>Функция распределения с.в. η</string>
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/img/img/2.png</pixmap>
+             </property>
+             <property name="scaledContents">
+              <bool>true</bool>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="pixmap">
+              <pixmap resource="resources.qrc">:/img/img/1.png</pixmap>
+             </property>
+             <property name="scaledContents">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
@@ -234,9 +184,15 @@
         </item>
         <item row="3" column="0">
          <widget class="QTabWidget" name="tabWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>0</width>
+            <width>1000</width>
             <height>1000</height>
            </size>
           </property>
@@ -263,58 +219,126 @@
           <property name="elideMode">
            <enum>Qt::ElideLeft</enum>
           </property>
-          <widget class="QWidget" name="tab">
+          <widget class="QWidget" name="tab_4">
            <attribute name="title">
-            <string>Задание 1</string>
+            <string>Графики</string>
            </attribute>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>100</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
+             <widget class="QGroupBox" name="groupBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="text">
-               <string>Количество экспериментов: </string>
+              <property name="minimumSize">
+               <size>
+                <width>500</width>
+                <height>0</height>
+               </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="title">
+               <string>Графики</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QChartView" name="raspr"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="font">
+                  <font>
+                   <pointsize>11</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Плотность распределения с.в. η</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QChartView" name="funct"/>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="font">
+                  <font>
+                   <pointsize>11</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Функция распределения с.в. η</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
-            <item row="0" column="3" rowspan="2">
-             <widget class="QPushButton" name="start1">
-              <property name="text">
-               <string>Провести эксперименты</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="4">
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Задание 1</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="1" column="0" colspan="4">
              <widget class="QTableWidget" name="tableWidget">
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
@@ -355,6 +379,70 @@
            <attribute name="title">
             <string>Задание 2</string>
            </attribute>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QTableWidget" name="tableWidget_2">
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <column>
+               <property name="text">
+                <string>Eη</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>x-</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>|Eη - x-|</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Dη</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>S^2</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>|Dη - S^2|</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Me^</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>R^</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -363,95 +451,165 @@
           </widget>
          </widget>
         </item>
-        <item row="0" column="0" colspan="2">
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="title">
-           <string>Постановка задачи</string>
+        <item row="2" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="1">
-            <widget class="QLabel" name="img2">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
+          <property name="title">
+           <string/>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item row="1" column="3" colspan="4">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-             <property name="minimumSize">
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>500</width>
-               <height>150</height>
+               <width>40</width>
+               <height>20</height>
               </size>
              </property>
+            </spacer>
+           </item>
+           <item row="0" column="4">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
              <property name="text">
-              <string/>
-             </property>
-             <property name="pixmap">
-              <pixmap resource="resources.qrc">:/img/img/2.png</pixmap>
-             </property>
-             <property name="scaledContents">
-              <bool>true</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <string>λ=2/(2+c)</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="img3">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>500</width>
-               <height>150</height>
-              </size>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
              </property>
              <property name="text">
-              <string/>
-             </property>
-             <property name="pixmap">
-              <pixmap resource="resources.qrc">:/img/img/3.png</pixmap>
-             </property>
-             <property name="scaledContents">
-              <bool>true</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+              <string>Параметр c: </string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0" rowspan="2">
-            <widget class="QLabel" name="label">
+           <item row="0" column="6">
+            <widget class="QPushButton" name="CreateGraphics">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
               <size>
-               <width>800</width>
-               <height>200</height>
+               <width>0</width>
+               <height>50</height>
               </size>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
              <property name="text">
-              <string/>
-             </property>
-             <property name="pixmap">
-              <pixmap resource="resources.qrc">:/img/img/1.png</pixmap>
-             </property>
-             <property name="scaledContents">
-              <bool>false</bool>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <string>Провести эксперименты</string>
              </property>
             </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Количество экспериментов: </string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLineEdit" name="setC">
+             <property name="text">
+              <string>-1</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="5">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLineEdit" name="lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>100</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="7">
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -467,8 +625,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
-     <height>25</height>
+     <width>1494</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>

@@ -26,9 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
     int h3 = ui->label->height();
     ui->img3->setPixmap(pix3.scaled(w3, h3));
 
-    ui->tabWidget->setTabText(0, "Задание 1");
-    ui->tabWidget->setTabText(1, "Задание 2");
-    ui->tabWidget->setTabText(2, "Задание 3");
+    //ui->tabWidget->setTabText(0, "Задание 1");
+    //ui->tabWidget->setTabText(1, "Задание 2");
+    //ui->tabWidget->setTabText(2, "Задание 3");
 
     ui->tabWidget->setCurrentIndex(0);
 
@@ -82,61 +82,77 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_CreateGraphics_clicked()
 {
-    if (rasprV || funcV)
+    if (!changedC)
     {
-        chart->removeAllSeries();
-        chart2->removeAllSeries();
-        rasprV = nullptr;
-        funcV = nullptr;
-    }
-
-    rasprV = new QLineSeries();
-    funcV = new QLineSeries();
-
-    *rasprV << QPointF(-2., 0.);
-    *rasprV << QPointF(c, 0.);
-    *rasprV << QPointF(0., 1.);
-
-    *funcV << QPointF(-2., 0.);
-    *funcV << QPointF(c, 0.);
-
-    for (double y = c; y <= 0. ; y += 0.01)
-    {
-        *funcV << QPointF(y, -y * y / 2. / c + y - c / 2.);
-    }
-
-    if (c != -2.)
-    {
-        for (int i = 0; i < 100; i++)
+        if (rasprV || funcV)
         {
-            double y = static_cast<double>(i) / 50.;
-            *rasprV << QPointF(y, exp(-lambda * y));
+            chart->removeAllSeries();
+            chart2->removeAllSeries();
+            rasprV = nullptr;
+            funcV = nullptr;
         }
 
-        for (double y = 0; y <= 2.; y += 0.01)
+        rasprV = new QLineSeries();
+        funcV = new QLineSeries();
+
+        *rasprV << QPointF(-2., 0.);
+        *rasprV << QPointF(c, 0.);
+        *rasprV << QPointF(0., 1.);
+
+        *funcV << QPointF(-2., 0.);
+        *funcV << QPointF(c, 0.);
+
+        for (double y = c; y <= 0. ; y += 0.01)
         {
-            *funcV << QPointF(y, -exp(-lambda * y) / lambda + 1. / lambda - c / 2.);
+            *funcV << QPointF(y, -y * y / 2. / c + y - c / 2.);
         }
+
+        if (c != -2.)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                double y = static_cast<double>(i) / 50.;
+                *rasprV << QPointF(y, exp(-lambda * y));
+            }
+
+            for (double y = 0; y <= 2.; y += 0.01)
+            {
+                *funcV << QPointF(y, -exp(-lambda * y) / lambda + 1. / lambda - c / 2.);
+            }
+        }
+
+        chart->addSeries(rasprV);
+        rasprV->attachAxis(axisX);
+        rasprV->attachAxis(axisY);
+
+        axisX->setRange(-2., 2.);
+        axisY->setRange(0., 1.);
+
+        ui->raspr->setChart(chart);
+
+        chart2->addSeries(funcV);
+        funcV->attachAxis(axisX2);
+        funcV->attachAxis(axisY2);
+
+        axisX2->setRange(-2., 2.);
+        axisY2->setRange(0., 1.);
+        changedC = false;
     }
-
-    chart->addSeries(rasprV);
-    rasprV->attachAxis(axisX);
-    rasprV->attachAxis(axisY);
-
-    axisX->setRange(-2., 2.);
-    axisY->setRange(0., 1.);
-
-    ui->raspr->setChart(chart);
-
-    chart2->addSeries(funcV);
-    funcV->attachAxis(axisX2);
-    funcV->attachAxis(axisY2);
-
-    axisX2->setRange(-2., 2.);
-    axisY2->setRange(0., 1.);
 
     ui->funct->setChart(chart2);
-    on_start1_clicked();
+
+    ui->tableWidget->setRowCount(N);
+
+    QStringList nameTable;
+
+    for (int i = 0 ; i <= N; i++)
+        nameTable << QString().number(i);
+
+    ui->tableWidget_2->setRowCount(1);
+    ui->tableWidget_2->verticalHeader()->setVisible(false);
+    //ui->tableWidget_2->setVerticalHeaderLabels(nameTable);
+    task1();
+    task2();
 }
 
 
@@ -168,6 +184,7 @@ void MainWindow::on_setC_editingFinished()
     ui->CreateGraphics->setEnabled(true);
     c = ui->setC->text().toDouble();
     if (c != -2.) lambda = 2. / (2. + c);
+    changedC = true;
 }
 
 
@@ -182,7 +199,7 @@ void MainWindow::on_lineEdit_editingFinished()
         msgBox.setText("Недопустимые символы");
         msgBox.exec();
 
-        ui->start1->setEnabled(false);
+        ui->CreateGraphics->setEnabled(false);
 
         return;
     }
@@ -192,25 +209,96 @@ void MainWindow::on_lineEdit_editingFinished()
         QMessageBox msgBox;
         msgBox.setText("Количество не может быть отрицательным числом");
         msgBox.exec();
-        ui->start1->setEnabled(false);
+        ui->CreateGraphics->setEnabled(false);
         return;
     }
 
-    ui->start1->setEnabled(true);
+    ui->CreateGraphics->setEnabled(true);
     N = ui->lineEdit->text().toInt();
 }
 
 void MainWindow::task1()
 {
-
-    for (int i = 0; i <= N; i++)
+    table.clear();
+    for (int i = 0; i < N; i++)
     {
         double x = funcRandom(static_cast<double>(rand()) / RAND_MAX);
-        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(x)));
-        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(plotRaspr(x))));
+        table.insert({{x, plotRaspr(x)}});
     }
 
-    ui->tableWidget->sortByColumn(0, Qt::AscendingOrder);
+    int i = 0;
+
+    for (auto it = table.begin(); it != table.end(); ++it)
+    {
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(std::get<0>(*it))));
+        ui->tableWidget->setItem(i++, 1, new QTableWidgetItem(QString::number(std::get<1>(*it))));
+    }
+}
+
+void MainWindow::task2()
+{
+    double totalX = 0.;
+    double totalS = 0.;
+    double totalR = 0.;
+    double totalMe = 0.;
+    double totalM = c * c / 12. + c + 1.;
+    double middleX = 0.;
+    double totalD = 0.25 * pow((2. + c), 3) - pow(c, 3) / 12. - totalMe * totalMe;
+    int index;
+
+    if (table.size() % 2)
+    {
+        index = (table.size() - 1) / 2;
+        //totalMe = std::get<0>(table[index]);
+    }
+    else
+    {
+        index = table.size()/ 2;
+        //totalMe = (std::get<0>(table[index]) + std::get<0>(table[index + 1])) / 2;
+    }
+
+    int i = 0;
+
+    for (auto it = table.begin(); it != table.end(); ++it)
+    {
+        if (i == index && table.size() % 2)
+        {
+            totalMe = std::get<0>(*it);
+        }
+
+        if (i == (index - 1) && table.size() % 2 == 0)
+        {
+            totalMe += std::get<0>(*it);
+        }
+
+        if (i == index && table.size() % 2 == 0)
+        {
+            totalMe += std::get<0>(*it);
+            totalMe /= 2.;
+        }
+
+        middleX += std::get<0>(*it);
+        i++;
+    }
+
+
+    middleX /= static_cast<double>(table.size());
+
+    for (auto it = table.begin(); it != table.end(); ++it)
+        totalS += pow((std::get<0>(*it) - middleX), 2.);
+
+    totalS /= static_cast<double>(table.size());
+
+    totalR = std::get<0>(*table.begin()) - std::get<0>(*(--table.end()));
+
+    ui->tableWidget_2->setItem(0, 0, new QTableWidgetItem(QString::number(totalM)));
+    ui->tableWidget_2->setItem(0, 1, new QTableWidgetItem(QString::number(middleX)));
+    ui->tableWidget_2->setItem(0, 2, new QTableWidgetItem(QString::number(abs(totalM - middleX))));
+    ui->tableWidget_2->setItem(0, 3, new QTableWidgetItem(QString::number(totalD)));
+    ui->tableWidget_2->setItem(0, 4, new QTableWidgetItem(QString::number(totalS)));
+    ui->tableWidget_2->setItem(0, 5, new QTableWidgetItem(QString::number(abs(totalD - totalS))));
+    ui->tableWidget_2->setItem(0, 6, new QTableWidgetItem(QString::number(totalMe)));
+    ui->tableWidget_2->setItem(0, 7, new QTableWidgetItem(QString::number(totalR)));
 }
 
 double MainWindow::plotRaspr(double y)
@@ -231,26 +319,13 @@ double MainWindow::plotRaspr(double y)
 
 double MainWindow::funcRandom(double y)
 {
-    //if (0 < y && y <= 0.5)
-    if (c < y && y <= 0.)
+    if (y <= (-c / 2.))
     {
-        return sqrt(2. * -c * y) - 1.;
-    }
-    //else if (0.5 < y && y <= 1)
-    else if (y > c)
-    {
-        return -1. / lambda * log(1. - c * lambda / 2. - lambda * y);
+        return sqrt(2 * -c) * (sqrt(y) - sqrt(-c / 2.));
     }
     else
     {
-        return 0.;
+        return -1. / lambda * log(1. - c * lambda / 2. - lambda * y);
     }
-}
-
-
-void MainWindow::on_start1_clicked()
-{
-    ui->tableWidget->setRowCount(N + 1);
-    task1();
 }
 
