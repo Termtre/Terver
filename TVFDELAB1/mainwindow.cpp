@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     chart = new QChart();
     chart->legend()->setVisible(false);
+    chart->setTitle("Плотность распределения c.в. η");
 
     axisX = new QValueAxis();
     axisX->setLabelFormat("%f");
@@ -47,13 +48,14 @@ MainWindow::MainWindow(QWidget *parent)
     axisY = new QValueAxis();
     axisY->setLabelFormat("%f");
     axisY->setTickCount(5);
-    axisY->setTitleText("fη(y), плотность распределения c.в. η");
+    axisY->setTitleText("fη(y)");
     chart->addAxis(axisY, Qt::AlignLeft);
 
     ui->raspr->setRenderHint(QPainter::Antialiasing);
 
     chart2 = new QChart();
     chart2->legend()->setVisible(false);
+    chart2->setTitle("Функция распределения c.в. η");
 
     axisX2 = new QValueAxis();
     axisX2->setLabelFormat("%f");
@@ -64,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     axisY2 = new QValueAxis();
     axisY2->setLabelFormat("%f");
     axisY2->setTickCount(5);
-    axisY2->setTitleText("Fη(y), функция распределения c.в. η");
+    axisY2->setTitleText("Fη(y)");
     chart2->addAxis(axisY2, Qt::AlignLeft);
 
     chart2->layout()->setContentsMargins(0, 0, 0, 0);
