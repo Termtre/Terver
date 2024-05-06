@@ -198,11 +198,13 @@ double MainWindow::theorPlot(double x)
 
 void MainWindow::gistogramma()
 {
-    double R = table.back() - table.front();
-    double h = R / static_cast<double>(N2);
-    double a = table.front();
+    double a = table[0];
+    double b = table[N - 1];
+    double h = (b - a) / static_cast<double>(N2);
     double ni = 0.;
     double delta;
+    double array[N2][2];
+    double heights[N2];
 
     auto chart = new QChart();
     chart->legend()->setVisible(false);
@@ -228,40 +230,55 @@ void MainWindow::gistogramma()
     auto top = new QLineSeries();
     auto floor = new QLineSeries();
 
-    for (int i = 0; i < N; i++)//???
+    int k = 0;
+
+    while (a < b)
     {
-        if (table[i] <= (a + h))
+        array[k][0] = a;
+        a += h;
+        array[k++][1] = a;
+    }
+
+    ui->tableWidget_3->setRowCount(N2);
+
+    for (int i = 0; i < N2; ++i)
+    {
+        ui->tableWidget_3->setItem(i, 0, new QTableWidgetItem(QString::number(array[i][1] / 2. + array[i][0] / 2.)));
+        ui->tableWidget_3->setItem(i, 1, new QTableWidgetItem(QString::number(theorPlot(array[i][1] / 2. + array[i][0] / 2.))));
+    }
+
+    k = 0;
+
+    ni = 1.;
+
+    for (auto it = ++table.begin(); it != table.end(); ++it)
+    {
+        if (*it <= array[k][1])
         {
             ni += 1.;
-
-            if (i == (N - 1))
-            {
-                delta = ni / static_cast<double>(N) / h;
-                a = table.back();
-                *top << QPointF(a - h, delta) << QPointF(a, delta);
-                *floor << QPointF(a - h, 0.) << QPointF(a, 0.);
-            }
         }
         else
         {
-            a += h;
-
-            delta = ni / static_cast<double>(N) / h;
-
-            *top << QPointF(a - h, delta) << QPointF(a, delta);
-            *floor << QPointF(a - h, 0.) << QPointF(a, 0.);
+            heights[k] = ni / static_cast<double>(N) / h;
+            k++;
             ni = 1.;
         }
     }
 
+    for (int i = 0; i < N2; i++)
+    {
+        *top << QPointF(array[i][0], heights[i]) << QPointF(array[i][1], heights[i]);
+        *floor << QPointF(array[i][0], 0.) << QPointF(array[i][1], 0.);
+    }
+
     auto areaPlot = new QAreaSeries(top, floor);
 
-    chart->addSeries(top);
-    top->attachAxis(axisX);
-    top->attachAxis(axisY);
+    chart->addSeries(areaPlot);
+    areaPlot->attachAxis(axisX);
+    areaPlot->attachAxis(axisY);
 
     axisX->setRange(table.front(), table.back());
-    //axisY->setRange(0., 1.);
+    axisY->setRange(0., 10.);
 
     ui->gistogramm->setChart(chart);
 }
@@ -295,18 +312,32 @@ void MainWindow::graphics()
     statFuncSeries->setName("Выборочная Fη");
 
     double D = 0.;
-    double x, y1, y2;
+    double x, y1, y2, y3;
+
+    for (auto i = table.front(); i <= table.back(); i += 0.001)
+    {
+        *theorFuncSeries << QPointF(i, theorFunc(i));
+    }
+
+
 
     for (int i = 0; i < N; i++)
     {
         x = table[i];
         y1 = theorFunc(x);
         y2 = statFunc(x);
+        if (i != 0) y3 = statFunc(table[i - 1]);
 
         D = abs(y2 - y1) > D ? abs(y2 - y1) : D;
 
-        *theorFuncSeries << QPointF(x, theorFunc(x));
-        *statFuncSeries << QPointF(x, statFunc(x));
+        if (i != 0)
+        {
+            *statFuncSeries << QPointF(table[i - 1], y2) << QPointF(x, y2);
+        }
+        else
+        {
+            *statFuncSeries << QPointF(x, y2);
+        }
     }
 
     ui->calculateD->setText(QString::number(D));
