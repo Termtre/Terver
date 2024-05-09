@@ -28,6 +28,10 @@ private slots:
 
     void on_changeN2_editingFinished();
 
+    void on_numberIntervalsEdit_editingFinished();
+
+    void on_pushButton_clicked();
+
 private:
     bool changeCTrue = true;
     bool changeNTrue = true;
@@ -37,6 +41,7 @@ private:
     double lambda = 2.;
     int N = 10;
     int N2 = 10;
+    int numberIntervals = 10;
 
     std::vector<double> table;
 
@@ -46,6 +51,8 @@ private:
     double theorPlot(double x);
     void gistogramma();
     void graphics();
+    void divIntervals();
+    double integral_trapezoid(double b, double a);
 
 private:
     Ui::MainWindow *ui;

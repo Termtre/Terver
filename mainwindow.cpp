@@ -11,6 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     this->setWindowTitle("Фомичев Дмитрий 3821Б1ПМмм1");
+
+    QUrl url("qrc:/about/about.html");
+
+    ui->textBrowser->setSource(url);
 }
 
 MainWindow::~MainWindow()
@@ -71,6 +75,7 @@ void MainWindow::on_start_clicked()
 
     graphics();
     gistogramma();
+    divIntervals();
 }
 
 void MainWindow::on_changeC_editingFinished()
@@ -140,8 +145,7 @@ void MainWindow::on_changeN_editingFinished()
 
 double MainWindow::funcRandom(double y)
 {
-    if (y == 0.) return 0.;
-    else if (0 < y && y <= (-c / 2.))
+    if (0 <= y && y <= (-c / 2.))
     {
         return sqrt(-2 * c * y) + c;
     }
@@ -198,13 +202,7 @@ double MainWindow::theorPlot(double x)
 
 void MainWindow::gistogramma()
 {
-    double a = table[0];
-    double b = table[N - 1];
-    double h = (b - a) / static_cast<double>(N2);
-    double ni = 0.;
-    double delta;
-    double array[N2][2];
-    double heights[N2];
+    ui->tableWidget_3->setRowCount(N2);
 
     auto chart = new QChart();
     chart->legend()->setVisible(false);
@@ -216,13 +214,11 @@ void MainWindow::gistogramma()
     auto axisX = new QValueAxis();
     axisX->setLabelFormat("%f");
     axisX->setTickCount(5);
-    axisX->setTitleText("Промежутки");
     chart->addAxis(axisX, Qt::AlignBottom);
 
     auto axisY = new QValueAxis();
     axisY->setLabelFormat("%f");
     axisY->setTickCount(5);
-    axisY->setTitleText("Число элементов");
     chart->addAxis(axisY, Qt::AlignLeft);
 
     ui->gistogramm->setRenderHint(QPainter::Antialiasing);
@@ -230,46 +226,63 @@ void MainWindow::gistogramma()
     auto top = new QLineSeries();
     auto floor = new QLineSeries();
 
-    int k = 0;
+    double a = table[0];
+    double b = table[N - 1];
+    double h = (b - a) / static_cast<double>(N2);
+    double ni = 0.;
+    double delta;
+    double middle;
+    double maxEps = 0.;
 
-    while (a < b)
+    if (N == 1)
     {
-        array[k][0] = a;
-        a += h;
-        array[k++][1] = a;
+        *top << QPointF(a, 100.);
+        *floor << QPointF(a, 0.);
+        ui->tableWidget_3->setItem(0, 0, new QTableWidgetItem(QString::number(a / 2.)));
+        ui->tableWidget_3->setItem(0, 1, new QTableWidgetItem(QString::number(theorPlot(a / 2.))));
+        ui->tableWidget_3->setItem(0, 2, new QTableWidgetItem(QString::number(1)));
+        ui->maxProm->setText("0");
     }
-
-    ui->tableWidget_3->setRowCount(N2);
-
-    for (int i = 0; i < N2; ++i)
+    else
     {
-        ui->tableWidget_3->setItem(i, 0, new QTableWidgetItem(QString::number(array[i][1] / 2. + array[i][0] / 2.)));
-        ui->tableWidget_3->setItem(i, 1, new QTableWidgetItem(QString::number(theorPlot(array[i][1] / 2. + array[i][0] / 2.))));
-    }
+        int count = 0;
+        int k = 0;
 
-    k = 0;
-
-    ni = 1.;
-
-    for (auto it = ++table.begin(); it != table.end(); ++it)
-    {
-        if (*it <= array[k][1])
+        while(a < b)
         {
-            ni += 1.;
-        }
-        else
-        {
-            heights[k] = ni / static_cast<double>(N) / h;
-            k++;
-            ni = 1.;
+            for (; count < N; count++)
+            {
+                if (table[count] <= (a + h + 0.0000001))
+                {
+                    ni += 1.;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            delta = ni / (static_cast<double>(N) * h);
+
+            *floor << QPointF(a, 0.);
+            *top << QPointF(a, delta);
+
+            middle = a + h / 2.;
+            ui->tableWidget_3->setItem(k, 0, new QTableWidgetItem(QString::number(middle)));
+            ui->tableWidget_3->setItem(k, 1, new QTableWidgetItem(QString::number(theorPlot(middle))));
+            ui->tableWidget_3->setItem(k++, 2, new QTableWidgetItem(QString::number(delta)));
+            maxEps = std::max(maxEps, abs(delta - theorPlot(middle)));
+
+            a += h;
+
+            *floor << QPointF(a, 0.);
+            *top << QPointF(a, delta);
+
+            ni = 0.;
         }
     }
 
-    for (int i = 0; i < N2; i++)
-    {
-        *top << QPointF(array[i][0], heights[i]) << QPointF(array[i][1], heights[i]);
-        *floor << QPointF(array[i][0], 0.) << QPointF(array[i][1], 0.);
-    }
+    ui->maxProm->setText(QString::number(maxEps));
 
     auto areaPlot = new QAreaSeries(top, floor);
 
@@ -278,7 +291,7 @@ void MainWindow::gistogramma()
     areaPlot->attachAxis(axisY);
 
     axisX->setRange(table.front(), table.back());
-    axisY->setRange(0., 10.);
+    //axisY->setRange(0., 10.);
 
     ui->gistogramm->setChart(chart);
 }
@@ -294,13 +307,13 @@ void MainWindow::graphics()
 
     auto axisX = new QValueAxis();
     axisX->setLabelFormat("%f");
-    axisX->setTickCount(5);
+    axisX->setTickCount(7);
     axisX->setTitleText("y");
     chart->addAxis(axisX, Qt::AlignBottom);
 
     auto axisY = new QValueAxis();
     axisY->setLabelFormat("%f");
-    axisY->setTickCount(5);
+    axisY->setTickCount(10);
     axisY->setTitleText("Функции распределения");
     chart->addAxis(axisY, Qt::AlignLeft);
 
@@ -312,31 +325,33 @@ void MainWindow::graphics()
     statFuncSeries->setName("Выборочная Fη");
 
     double D = 0.;
-    double x, y1, y2, y3;
+    double x, y1, y2;
 
     for (auto i = table.front(); i <= table.back(); i += 0.001)
     {
         *theorFuncSeries << QPointF(i, theorFunc(i));
     }
 
-
+    int p = N / 10000;
 
     for (int i = 0; i < N; i++)
     {
         x = table[i];
         y1 = theorFunc(x);
         y2 = statFunc(x);
-        if (i != 0) y3 = statFunc(table[i - 1]);
 
         D = abs(y2 - y1) > D ? abs(y2 - y1) : D;
 
-        if (i != 0)
+        if (N <= 10000 || !(i % p))
         {
-            *statFuncSeries << QPointF(table[i - 1], y2) << QPointF(x, y2);
-        }
-        else
-        {
-            *statFuncSeries << QPointF(x, y2);
+            if (i != 0)
+            {
+                *statFuncSeries << QPointF(table[i - 1], y2) << QPointF(x, y2);
+            }
+            else
+            {
+                *statFuncSeries << QPointF(x, y2);
+            }
         }
     }
 
@@ -354,6 +369,66 @@ void MainWindow::graphics()
     axisY->setRange(0., 1.);
 
     ui->graphicsView_2->setChart(chart);
+}
+
+void MainWindow::divIntervals()
+{
+    if (!table.size()) return;
+    ui->tableWidget->setRowCount(numberIntervals + 1);
+
+    ui->tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(-INFINITY)));
+    ui->tableWidget->setItem(numberIntervals, 0, new QTableWidgetItem(QString::number(INFINITY)));
+
+    if (N == 1)
+    {
+        return;
+    }
+
+    double h = (table.back() - table.front()) / static_cast<double>(numberIntervals);
+
+    double a = table.front();
+    double q;
+
+    double testForTest = 0.;
+
+    QStringList header("0");
+
+    for (int i = 0; i < numberIntervals - 1; i++)
+    {
+        if (i == 0) q = integral_trapezoid(a, -INFINITY);
+        else q = integral_trapezoid(a, a - h);
+
+        testForTest += q;
+
+        ui->tableWidget->setItem(i + 1, 0, new QTableWidgetItem(QString::number(a)));
+        ui->tableWidget->setItem(i + 1, 1, new QTableWidgetItem(QString::number(q)));
+        a += h;
+        header << QString::number(i + 1);
+    }
+
+    header << QString::number(numberIntervals);
+
+    ui->tableWidget->setVerticalHeaderLabels(header);
+
+    ui->tableWidget->setItem(numberIntervals, 1,
+                             new QTableWidgetItem(QString::number(integral_trapezoid(INFINITY, table.back()))));
+
+    ui->hypStatus->setText(QString::number(testForTest));
+}
+
+double MainWindow::integral_trapezoid(double b, double a)
+{
+    if (b == INFINITY) return 1. - theorFunc(a);
+    if (a == -INFINITY) return theorFunc(b);
+
+    double h = b / 2. - a / 2.;
+    double g1, g2;
+
+    g1 = theorPlot(b);
+    g2 = theorPlot(a);
+
+    return h * (g1 + g2);
+
 }
 
 void MainWindow::on_start2_clicked()
@@ -392,5 +467,38 @@ void MainWindow::on_changeN2_editingFinished()
     changeN2True = true;
     if (changeCTrue && changeNTrue && changeN2True) ui->start2->setEnabled(true);
     N2 = ui->changeN2->text().toInt();
+}
+
+
+void MainWindow::on_numberIntervalsEdit_editingFinished()
+{
+    bool ok;
+    ui->numberIntervalsEdit->text().toInt(&ok);
+
+    if (ok == false)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Недопустимые символы");
+        msgBox.exec();
+
+        return;
+    }
+
+    if (ui->numberIntervalsEdit->text().toInt() < 1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Количество интервалов не может быть меньше 1");
+        msgBox.exec();
+
+        return;
+    }
+
+    numberIntervals = ui->numberIntervalsEdit->text().toInt();
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    divIntervals();
 }
 
