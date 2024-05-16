@@ -174,7 +174,7 @@ double MainWindow::statFunc(double x)
     double res = 0.;
     for (auto it = table.begin(); it != table.end(); ++it)
     {
-        if (*it < x)
+        if (*it < x + 0.0000001)
         {
             res += 1.;
         }
@@ -202,6 +202,7 @@ double MainWindow::theorPlot(double x)
 
 void MainWindow::gistogramma()
 {
+    if (!table.size()) return;
     ui->tableWidget_3->setRowCount(N2);
 
     auto chart = new QChart();
@@ -221,7 +222,7 @@ void MainWindow::gistogramma()
     axisY->setTickCount(5);
     chart->addAxis(axisY, Qt::AlignLeft);
 
-    ui->gistogramm->setRenderHint(QPainter::Antialiasing);
+    //ui->gistogramm->setRenderHint(QPainter::Antialiasing);
 
     auto top = new QLineSeries();
     auto floor = new QLineSeries();
@@ -238,21 +239,19 @@ void MainWindow::gistogramma()
     {
         *top << QPointF(a, 100.);
         *floor << QPointF(a, 0.);
-        ui->tableWidget_3->setItem(0, 0, new QTableWidgetItem(QString::number(a / 2.)));
-        ui->tableWidget_3->setItem(0, 1, new QTableWidgetItem(QString::number(theorPlot(a / 2.))));
-        ui->tableWidget_3->setItem(0, 2, new QTableWidgetItem(QString::number(1)));
+        ui->tableWidget_3->setItem(0, 2, new QTableWidgetItem(QString::number(a / 2.)));
+        ui->tableWidget_3->setItem(0, 3, new QTableWidgetItem(QString::number(theorPlot(a / 2.))));
+        ui->tableWidget_3->setItem(0, 4, new QTableWidgetItem(QString::number(1)));
         ui->maxProm->setText("0");
     }
     else
     {
-        int count = 0;
         int k = 0;
-
-        while(a < b)
+        for (auto it = table.begin(); a < (b - 0.0000001); a += h)
         {
-            for (; count < N; count++)
+            for (; it != table.end(); ++it)
             {
-                if (table[count] <= (a + h + 0.0000001))
+                if (*it < (a + h + 0.0000001))
                 {
                     ni += 1.;
                 }
@@ -264,25 +263,24 @@ void MainWindow::gistogramma()
 
             delta = ni / (static_cast<double>(N) * h);
 
-            *floor << QPointF(a, 0.);
-            *top << QPointF(a, delta);
+            *floor << QPointF(a, 0.) << QPointF(a + h, 0.);
+            *top << QPointF(a, delta) << QPointF(a + h, delta);
 
             middle = a + h / 2.;
-            ui->tableWidget_3->setItem(k, 0, new QTableWidgetItem(QString::number(middle)));
-            ui->tableWidget_3->setItem(k, 1, new QTableWidgetItem(QString::number(theorPlot(middle))));
-            ui->tableWidget_3->setItem(k++, 2, new QTableWidgetItem(QString::number(delta)));
+            ui->tableWidget_3->setItem(k, 0, new QTableWidgetItem("(" + QString::number(a) + ", " + QString::number(a + h) + ")"));
+            ui->tableWidget_3->setItem(k, 1, new QTableWidgetItem(QString::number(ni)));
+            ui->tableWidget_3->setItem(k, 2, new QTableWidgetItem(QString::number(middle)));
+            ui->tableWidget_3->setItem(k, 3, new QTableWidgetItem(QString::number(theorPlot(middle))));
+            ui->tableWidget_3->setItem(k++, 4, new QTableWidgetItem(QString::number(delta)));
             maxEps = std::max(maxEps, abs(delta - theorPlot(middle)));
-
-            a += h;
-
-            *floor << QPointF(a, 0.);
-            *top << QPointF(a, delta);
 
             ni = 0.;
         }
     }
 
     ui->maxProm->setText(QString::number(maxEps));
+
+    ui->tableWidget_3->verticalHeader()->hide();
 
     auto areaPlot = new QAreaSeries(top, floor);
 
@@ -327,7 +325,7 @@ void MainWindow::graphics()
     double D = 0.;
     double x, y1, y2;
 
-    for (auto i = table.front(); i <= table.back(); i += 0.001)
+    for (double i = c; i <= 2.; i += 0.001)
     {
         *theorFuncSeries << QPointF(i, theorFunc(i));
     }
@@ -350,10 +348,12 @@ void MainWindow::graphics()
             }
             else
             {
-                *statFuncSeries << QPointF(x, y2);
+                *statFuncSeries << QPointF(x, 0.) << QPointF(x, y2);
             }
         }
     }
+
+    *statFuncSeries << (QPointF(2., y2));
 
     ui->calculateD->setText(QString::number(D));
 
@@ -374,45 +374,82 @@ void MainWindow::graphics()
 void MainWindow::divIntervals()
 {
     if (!table.size()) return;
+
     ui->tableWidget->setRowCount(numberIntervals + 1);
 
-    ui->tableWidget->setItem(0, 0, new QTableWidgetItem(QString::number(-INFINITY)));
-    ui->tableWidget->setItem(numberIntervals, 0, new QTableWidgetItem(QString::number(INFINITY)));
+    double b = table.back();
+    double a = table.front();
+    double h = (b - a) / static_cast<double>(numberIntervals - 2);
+    double q;
+    double ni = 0.;
+    int numberOfFirstElem = 0;
 
-    if (N == 1)
+    double testR0 = 0.;
+
+    ui->tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(-INFINITY)));
+
+    for (auto it = table.begin(); it != table.end(); ++it)
     {
-        return;
+        if (*it != table.front()) break;
+        else numberOfFirstElem++;
     }
 
-    double h = (table.back() - table.front()) / static_cast<double>(numberIntervals);
+    ui->tableWidget->setItem(1, 0, new QTableWidgetItem("(" + QString::number(-INFINITY) + ", " + QString::number(a) + "]"));
+    ui->tableWidget->setItem(1, 1, new QTableWidgetItem(QString::number(numberOfFirstElem)));
+    ui->tableWidget->setItem(1, 2, new QTableWidgetItem(QString::number(a)));
+    ui->tableWidget->setItem(1, 3, new QTableWidgetItem(QString::number(getQ(a, -INFINITY))));
 
-    double a = table.front();
-    double q;
+    double temp = static_cast<double>(numberOfFirstElem) - static_cast<double>(N) * getQ(a, -INFINITY);
+    testR0 += (temp * temp) / (static_cast<double>(N) * getQ(a, -INFINITY));
 
-    double testForTest = 0.;
+    ui->tableWidget->setItem(numberIntervals, 0, new QTableWidgetItem("(" + QString::number(b) + ", " + QString::number(INFINITY) + ")"));
+    ui->tableWidget->setItem(numberIntervals, 1, new QTableWidgetItem(QString::number(0)));
+    ui->tableWidget->setItem(numberIntervals, 3, new QTableWidgetItem(QString::number(getQ(INFINITY, b))));
+    ui->tableWidget->setItem(numberIntervals, 2, new QTableWidgetItem(QString::number(INFINITY)));
 
-    QStringList header("0");
+    temp = static_cast<double>(N) * getQ(INFINITY, b);
+    testR0 += (temp * temp) / (static_cast<double>(N) * getQ(INFINITY, b));
 
-    for (int i = 0; i < numberIntervals - 1; i++)
+    double testForTest = getQ(INFINITY, b) + getQ(a, -INFINITY);
+
+    QStringList header;
+    for (int i = 0; i <= numberIntervals; i++)
     {
-        if (i == 0) q = integral_trapezoid(a, -INFINITY);
-        else q = integral_trapezoid(a, a - h);
+        header << QString::number(i);
+    }
+
+    int k = 2;
+    for (auto it = ++table.begin(); a < (b - 0.0000001); a += h)
+    {
+        for (; it != table.end(); ++it)
+        {
+            if (*it < (a + h + 0.0000001))
+            {
+                ni += 1.;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        q = getQ(a + h, a);
+
+        temp = ni - static_cast<double>(N) * q;
+        testR0 += temp * temp / (static_cast<double>(N) * q);
 
         testForTest += q;
 
-        ui->tableWidget->setItem(i + 1, 0, new QTableWidgetItem(QString::number(a)));
-        ui->tableWidget->setItem(i + 1, 1, new QTableWidgetItem(QString::number(q)));
-        a += h;
-        header << QString::number(i + 1);
+        ui->tableWidget->setItem(k, 0, new QTableWidgetItem("(" + QString::number(a) + ", " + QString::number(a + h) + "]"));
+        ui->tableWidget->setItem(k, 1, new QTableWidgetItem(QString::number(ni)));
+        ui->tableWidget->setItem(k, 2, new QTableWidgetItem(QString::number(a + h)));
+        ui->tableWidget->setItem(k++, 3, new QTableWidgetItem(QString::number(q)));
+        ni = 0.;
     }
-
-    header << QString::number(numberIntervals);
 
     ui->tableWidget->setVerticalHeaderLabels(header);
 
-    ui->tableWidget->setItem(numberIntervals, 1,
-                             new QTableWidgetItem(QString::number(integral_trapezoid(INFINITY, table.back()))));
-
+    ui->FR0edit->setText(QString::number(testR0));
     ui->hypStatus->setText(QString::number(testForTest));
 }
 
@@ -428,6 +465,41 @@ double MainWindow::integral_trapezoid(double b, double a)
     g2 = theorPlot(a);
 
     return h * (g1 + g2);
+
+}
+
+double MainWindow::getQ(double b, double a)
+{
+    if (b == INFINITY)
+    {
+        return 1. - theorFunc(a);
+    }
+
+    if (a == -INFINITY)
+    {
+        return theorFunc(b);
+    }
+
+    return theorFunc(b) - theorFunc(a);
+}
+
+double MainWindow::FXi(double x)
+{
+    double p = (static_cast<double>(numberIntervals - 1)) / 2.;
+
+    if (p < 1)
+    {}
+    else
+    {}
+}
+
+double MainWindow::I1(double x, double p)
+{
+
+}
+
+double MainWindow::I2(double x, double p)
+{
 
 }
 

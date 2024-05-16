@@ -53,6 +53,10 @@ private:
     void graphics();
     void divIntervals();
     double integral_trapezoid(double b, double a);
+    double getQ(double b, double a);
+    double FXi(double x);
+    double I1(double x, double p);
+    double I2(double x, double p);
 
 private:
     Ui::MainWindow *ui;
