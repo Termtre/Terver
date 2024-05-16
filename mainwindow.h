@@ -32,6 +32,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_lineEdit_2_editingFinished();
+
 private:
     bool changeCTrue = true;
     bool changeNTrue = true;
@@ -42,6 +44,7 @@ private:
     int N = 10;
     int N2 = 10;
     int numberIntervals = 10;
+    double alpha = 0.1;
 
     std::vector<double> table;
 
@@ -54,7 +57,8 @@ private:
     void divIntervals();
     double integral_trapezoid(double b, double a);
     double getQ(double b, double a);
-    double FXi(double x);
+    double FXi(double x, double r);
+    double fXi(double x, double r);
     double I1(double x, double p);
     double I2(double x, double p);
 

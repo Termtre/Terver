@@ -15,6 +15,11 @@ MainWindow::MainWindow(QWidget *parent)
     QUrl url("qrc:/about/about.html");
 
     ui->textBrowser->setSource(url);
+
+    ui->tableWidget->setColumnWidth(0, 180);
+    ui->tableWidget->setColumnWidth(1, 50);
+    ui->tableWidget->setColumnWidth(2, 100);
+    ui->tableWidget->setColumnWidth(3, 170);
 }
 
 MainWindow::~MainWindow()
@@ -377,40 +382,12 @@ void MainWindow::divIntervals()
 
     ui->tableWidget->setRowCount(numberIntervals + 1);
 
-    double b = table.back();
-    double a = table.front();
-    double h = (b - a) / static_cast<double>(numberIntervals - 2);
-    double q;
+    double b = -INFINITY;
+    double a = 0.;
+    double q = 0.;
     double ni = 0.;
-    int numberOfFirstElem = 0;
-
-    double testR0 = 0.;
 
     ui->tableWidget->setItem(0, 2, new QTableWidgetItem(QString::number(-INFINITY)));
-
-    for (auto it = table.begin(); it != table.end(); ++it)
-    {
-        if (*it != table.front()) break;
-        else numberOfFirstElem++;
-    }
-
-    ui->tableWidget->setItem(1, 0, new QTableWidgetItem("(" + QString::number(-INFINITY) + ", " + QString::number(a) + "]"));
-    ui->tableWidget->setItem(1, 1, new QTableWidgetItem(QString::number(numberOfFirstElem)));
-    ui->tableWidget->setItem(1, 2, new QTableWidgetItem(QString::number(a)));
-    ui->tableWidget->setItem(1, 3, new QTableWidgetItem(QString::number(getQ(a, -INFINITY))));
-
-    double temp = static_cast<double>(numberOfFirstElem) - static_cast<double>(N) * getQ(a, -INFINITY);
-    testR0 += (temp * temp) / (static_cast<double>(N) * getQ(a, -INFINITY));
-
-    ui->tableWidget->setItem(numberIntervals, 0, new QTableWidgetItem("(" + QString::number(b) + ", " + QString::number(INFINITY) + ")"));
-    ui->tableWidget->setItem(numberIntervals, 1, new QTableWidgetItem(QString::number(0)));
-    ui->tableWidget->setItem(numberIntervals, 3, new QTableWidgetItem(QString::number(getQ(INFINITY, b))));
-    ui->tableWidget->setItem(numberIntervals, 2, new QTableWidgetItem(QString::number(INFINITY)));
-
-    temp = static_cast<double>(N) * getQ(INFINITY, b);
-    testR0 += (temp * temp) / (static_cast<double>(N) * getQ(INFINITY, b));
-
-    double testForTest = getQ(INFINITY, b) + getQ(a, -INFINITY);
 
     QStringList header;
     for (int i = 0; i <= numberIntervals; i++)
@@ -418,12 +395,36 @@ void MainWindow::divIntervals()
         header << QString::number(i);
     }
 
-    int k = 2;
-    for (auto it = ++table.begin(); a < (b - 0.0000001); a += h)
+    double R0 = 0.;
+    double temp;
+
+    for (int i = 1, j = 0; i <= numberIntervals; i++)
     {
-        for (; it != table.end(); ++it)
+        a = b;
+        if (i != numberIntervals)
+            b = funcRandom((static_cast<double>(i) / static_cast<double>(numberIntervals)));
+        else b = INFINITY;
+
+        if (i == 1)
         {
-            if (*it < (a + h + 0.0000001))
+            ui->tableWidget->setItem(1, 0,
+                                     new QTableWidgetItem("(" + QString::number(-INFINITY) + ", " + QString::number(b) + "]"));
+        }
+        else if (i == numberIntervals)
+        {
+            ui->tableWidget->setItem(numberIntervals, 0,
+                                     new QTableWidgetItem("(" + QString::number(a) + ", " + QString::number(INFINITY) + ")"));
+        }
+        else
+        {
+            ui->tableWidget->setItem(i, 0, new QTableWidgetItem("(" + QString::number(a) + ", " + QString::number(b) + "]"));
+        }
+
+        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(QString::number(b)));
+
+        for (; j < N; j++)
+        {
+            if (table[j] < (b + 0.0000001))
             {
                 ni += 1.;
             }
@@ -433,24 +434,32 @@ void MainWindow::divIntervals()
             }
         }
 
-        q = getQ(a + h, a);
+        q = getQ(b, a);
 
         temp = ni - static_cast<double>(N) * q;
-        testR0 += temp * temp / (static_cast<double>(N) * q);
+        R0 += temp * temp / q;
 
-        testForTest += q;
-
-        ui->tableWidget->setItem(k, 0, new QTableWidgetItem("(" + QString::number(a) + ", " + QString::number(a + h) + "]"));
-        ui->tableWidget->setItem(k, 1, new QTableWidgetItem(QString::number(ni)));
-        ui->tableWidget->setItem(k, 2, new QTableWidgetItem(QString::number(a + h)));
-        ui->tableWidget->setItem(k++, 3, new QTableWidgetItem(QString::number(q)));
+        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(ni)));
+        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(q)));
         ni = 0.;
     }
 
+    R0 /= static_cast<double>(N);
+
+    double FR0 = FXi(R0, numberIntervals - 1);
+
+    ui->FR0edit->setText(QString::number(FR0));
+
     ui->tableWidget->setVerticalHeaderLabels(header);
 
-    ui->FR0edit->setText(QString::number(testR0));
-    ui->hypStatus->setText(QString::number(testForTest));
+    if (FR0 >= alpha)
+    {
+        ui->hypStatus->setText("принимается");
+    }
+    else
+    {
+        ui->hypStatus->setText("отвергается");
+    }
 }
 
 double MainWindow::integral_trapezoid(double b, double a)
@@ -483,24 +492,74 @@ double MainWindow::getQ(double b, double a)
     return theorFunc(b) - theorFunc(a);
 }
 
-double MainWindow::FXi(double x)
+double MainWindow::fXi(double x, double r)
 {
-    double p = (static_cast<double>(numberIntervals - 1)) / 2.;
-
-    if (p < 1)
-    {}
+    if (x <= 0.)
+    {
+        return 0.;
+    }
     else
-    {}
+    {
+        double temp = r / 2.;
+        return pow(2., -temp) / std::tgamma(temp) * pow(x, temp - 1.) * exp(-x / 2.);
+    }
+}
+
+double MainWindow::FXi(double x, double r)
+{
+    /*double p = (static_cast<double>(numberIntervals - 1)) / 2.;
+    double result = 0.;
+
+    if ((p <= x && x < 1.) || x < p)
+    {
+        result = I1(x * pow(2., p), p);
+    }
+    else
+    {
+        result = I2(x * pow(2., p), p);
+    }
+
+    return 1. - result;*/
+
+    double result = 0.;
+    double a = 0.;
+    double b = x;
+
+    for (int i = 1; i <= 20; i++)
+    {
+        result += fXi(a + (b - a) * static_cast<double>(i - 1) / 20., r)
+                  + fXi(a + (b - a) * static_cast<double>(i) / 20., r);
+    }
+
+    return 1. - result * (b - a) / 40.;
 }
 
 double MainWindow::I1(double x, double p)
 {
+    double result = exp(-x) * pow(x, p) / std::tgamma(p + 1);
+    double temp = 1.;
+    double del = 1.;
 
+    for (int r = 1; r <= 20; r++)
+    {
+        del *= (p + static_cast<double>(r));
+        temp += pow(x, r) / del;
+    }
+
+    return result * temp;
 }
 
 double MainWindow::I2(double x, double p)
 {
+    double result = exp(-x) * pow(x, p) / std::tgamma(p);
+    double del = 1. + 20.;
 
+    for (int i = 20; i > 0; i--)
+    {
+        del = x + (static_cast<double>(i) - p) / del;
+    }
+
+    return 1. - result / del;
 }
 
 void MainWindow::on_start2_clicked()
@@ -572,5 +631,32 @@ void MainWindow::on_numberIntervalsEdit_editingFinished()
 void MainWindow::on_pushButton_clicked()
 {
     divIntervals();
+}
+
+
+void MainWindow::on_lineEdit_2_editingFinished()
+{
+    bool ok;
+    double temp = ui->lineEdit_2->text().toDouble(&ok);
+
+    if (ok == false)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Недопустимые символы");
+        msgBox.exec();
+
+        return;
+    }
+
+    if (temp < 0. || temp > 1.)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Уровень значимости не может быть меньше нуля или больше единицы");
+        msgBox.exec();
+
+        return;
+    }
+
+    alpha = temp;
 }
 
