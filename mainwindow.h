@@ -48,6 +48,8 @@ private:
 
     std::vector<double> table;
 
+
+    void generateRandomSeq(std::vector<double>&);
     double funcRandom(double y);
     double theorFunc(double x);
     double statFunc(double x);
@@ -61,6 +63,7 @@ private:
     double fXi(double x, double r);
     double I1(double x, double p);
     double I2(double x, double p);
+    void testHyp();
 
 private:
     Ui::MainWindow *ui;

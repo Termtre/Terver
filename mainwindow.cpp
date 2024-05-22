@@ -33,14 +33,8 @@ void MainWindow::on_start_clicked()
 
     ui->tablewidget->setRowCount(N);
 
-    for (int i = 0; i < N; i++)
-    {
-        double x = funcRandom(static_cast<double>(rand()) / RAND_MAX);
-        table.push_back(x);
-        ui->tablewidget->setItem(i, 0, new QTableWidgetItem((QString::number(x))));
-    }
-
-    std::sort(table.begin(), table.end());
+    table.resize(N);
+    generateRandomSeq(table);
 
     double theorMathExp = c * c / 12. + c + 1.;
     double theorDis = 0.25 * pow((2. + c), 3) - pow(c, 3) / 12. - theorMathExp * theorMathExp;
@@ -437,14 +431,12 @@ void MainWindow::divIntervals()
         q = getQ(b, a);
 
         temp = ni - static_cast<double>(N) * q;
-        R0 += temp * temp / q;
+        R0 += temp * temp / q / static_cast<double>(N);
 
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(QString::number(ni)));
         ui->tableWidget->setItem(i, 3, new QTableWidgetItem(QString::number(q)));
         ni = 0.;
     }
-
-    R0 /= static_cast<double>(N);
 
     double FR0 = FXi(R0, numberIntervals - 1);
 
@@ -460,6 +452,8 @@ void MainWindow::divIntervals()
     {
         ui->hypStatus->setText("отвергается");
     }
+
+    testHyp();
 }
 
 double MainWindow::integral_trapezoid(double b, double a)
@@ -507,31 +501,18 @@ double MainWindow::fXi(double x, double r)
 
 double MainWindow::FXi(double x, double r)
 {
-    /*double p = (static_cast<double>(numberIntervals - 1)) / 2.;
-    double result = 0.;
-
-    if ((p <= x && x < 1.) || x < p)
-    {
-        result = I1(x * pow(2., p), p);
-    }
-    else
-    {
-        result = I2(x * pow(2., p), p);
-    }
-
-    return 1. - result;*/
-
     double result = 0.;
     double a = 0.;
     double b = x;
+    int n = 10000;
 
-    for (int i = 1; i <= 20; i++)
+    for (int i = 1; i <= n; i++)
     {
-        result += fXi(a + (b - a) * static_cast<double>(i - 1) / 20., r)
-                  + fXi(a + (b - a) * static_cast<double>(i) / 20., r);
+        result += fXi(a + (b - a) * static_cast<double>(i - 1) / static_cast<double>(n), r)
+                  + fXi(a + (b - a) * static_cast<double>(i) / static_cast<double>(n), r);
     }
 
-    return 1. - result * (b - a) / 40.;
+    return 1. - result * (b - a) / 2. / static_cast<double>(n);
 }
 
 double MainWindow::I1(double x, double p)
@@ -560,6 +541,76 @@ double MainWindow::I2(double x, double p)
     }
 
     return 1. - result / del;
+}
+
+void MainWindow::testHyp()
+{
+    int count = 0;
+
+    std::vector<double> vec;
+    double R0;
+    double a;
+    double b;
+    double ni;
+    double q;
+    double temp;
+    double FR0;
+
+    std::vector<double> intervals(numberIntervals + 1);
+    intervals[0] = -INFINITY;
+    intervals[numberIntervals] = INFINITY;
+
+    int Count = 1;
+
+    for (auto it = ++intervals.begin(); it != --intervals.end(); ++it)
+    {
+        *it = funcRandom((static_cast<double>(Count++) / static_cast<double>(numberIntervals)));
+    }
+
+    for (int i = 0; i < 100; i++)
+    {   
+        vec.resize(N);
+
+        generateRandomSeq(vec);
+
+        R0 = 0.;
+        a = 0.;
+        b = 0.;
+        ni = 0.;
+        q = 0.;
+
+        for (int i = 1, j = 0; i <= numberIntervals; i++)
+        {
+            for (; j < N; j++)
+            {
+                if (vec[j] < (intervals[i] + 0.0000001))
+                {
+                    ni += 1.;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            q = getQ(intervals[i], intervals[i - 1]);
+
+            temp = ni - static_cast<double>(N) * q;
+            R0 += temp * temp / q / static_cast<double>(N);
+
+            ni = 0.;
+        }
+
+        FR0 = FXi(R0, static_cast<double>(numberIntervals - 1));
+
+        if (FR0 >= alpha)
+        {
+            count++;
+        }
+    }
+
+    ui->tableWidget_4->setItem(0, 0, new QTableWidgetItem(QString::number(count)));
+    ui->tableWidget_4->setItem(0, 1, new QTableWidgetItem(QString::number(100 - count)));
 }
 
 void MainWindow::on_start2_clicked()
@@ -658,5 +709,17 @@ void MainWindow::on_lineEdit_2_editingFinished()
     }
 
     alpha = temp;
+}
+
+void MainWindow::generateRandomSeq(std::vector<double> & vec)
+{
+    double x;
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+    {
+        x = funcRandom(static_cast<double>(rand()) / RAND_MAX);
+        *it = x;
+    }
+
+    std::sort(vec.begin(), vec.end());
 }
 
